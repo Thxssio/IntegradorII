@@ -55,7 +55,7 @@ const Control = () => {
             <section className="control-section">
                 <h2>Controle da Bomba d'Água</h2>
                 <div className="info-box">
-                    <img src="/images/pump.png" alt="Ícone de Bomba" />
+                    <img src="./images/pump.png" alt="Ícone de Bomba" />
                     <div className="status" id="status">Status: {bombaLigada ? 'Ligado' : 'Desligado'}</div>
                     <button id="toggleButton" onClick={toggleBomba}>{bombaLigada ? 'Desligar' : 'Ligar'}</button>
                 </div>
