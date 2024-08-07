@@ -1,4 +1,3 @@
-// src/App.js
 import React, { useContext } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Home from './components/Home';
@@ -16,9 +15,9 @@ const App = () => {
         <AuthProvider>
             <Router>
                 <Routes>
-                    <Route path="/" element={<Navigate to="/home" />} />
+                    <Route path="/" element={<Navigate to="/login" />} />
                     <Route path="/login" element={<Login />} />
-                    <Route path="/home" element={<Home />} />
+                    <Route path="/home" element={<PrivateRoute><Home /></PrivateRoute>} />
                     <Route path="/control" element={<PrivateRoute><Control /></PrivateRoute>} />
                 </Routes>
             </Router>

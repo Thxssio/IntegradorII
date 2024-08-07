@@ -92,6 +92,7 @@ const Home = () => {
                 <h2>Histórico dos Níveis da Caixa de Água</h2>
                 <Line data={chartData} options={options} />
             </section>
+            <Footer/>
         </main>
     );
 };

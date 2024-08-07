@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
-const User = require('./models/userModel'); // Importar o modelo de usuário
+const User = require('./models/userModel');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -54,6 +54,18 @@ app.put('/api/data/:id/status', async (req, res) => {
         const { status } = req.body;
         const data = await Water.findByIdAndUpdate(req.params.id, { status }, { new: true });
         res.json(data);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
+
+// Rota para receber dados do Arduino
+app.post('/api/water-data', async (req, res) => {
+    try {
+        const { level, power, voltage, current, status } = req.body;
+        const waterData = new Water({ level, power, voltage, current, status });
+        const savedData = await waterData.save();
+        res.status(201).json(savedData);
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
