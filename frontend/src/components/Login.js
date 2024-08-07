@@ -35,7 +35,7 @@ const Login = () => {
 
     return (
         <div className="login-container">
-            <img src="/images/water-tank-login.jpg" alt="Ícone de Bomba de Água" />
+            <img src="./images/water-tank-login.jpg" alt="Ícone de Bomba de Água" />
             <h2>Login</h2>
             <form onSubmit={handleLogin}>
                 <input type="text" placeholder="Nome de usuário" value={username} onChange={(e) => setUsername(e.target.value)} required />

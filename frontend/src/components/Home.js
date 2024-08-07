@@ -66,7 +66,7 @@ const Home = () => {
             <section className="info-section">
                 <h2>Informações sobre a caixa de água:</h2>
                 <div className="info-box">
-                    <img src="/images/water-tank-icon.png" alt="Ícone de Caixa de Água" />
+                    <img src="./images/water-tank-icon.png" alt="Ícone de Caixa de Água" />
                     <div className="info-text">Nível da Água: {data.length > 0 ? data[data.length - 1].level : 'Carregando...'}</div>
                     <div className="progress-bar">
                         <div className="progress" style={{ width: `${data.length > 0 ? data[data.length - 1].level : 0}%` }}></div>
@@ -76,7 +76,7 @@ const Home = () => {
             <section className="info-section">
                 <h2>Informações sobre a bomba:</h2>
                 <div className="info-box">
-                    <img src="/images/pump.png" alt="Ícone de Bomba" />
+                    <img src="./images/pump.png" alt="Ícone de Bomba" />
                     {data.length > 0 ? (
                         <>
                             <div className="info-text">Potência: {data[data.length - 1].power}W</div>
@@ -92,6 +92,7 @@ const Home = () => {
                 <h2>Histórico dos Níveis da Caixa de Água</h2>
                 <Line data={chartData} options={options} />
             </section>
+            <Footer/>
         </main>
     );
 };
