@@ -1,34 +1,29 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
-import Header from './components/Header';
+// src/App.js
+import React, { useContext } from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Home from './components/Home';
 import Control from './components/Control';
 import Login from './components/Login';
-import './components/styles.css';
+import AuthContext, { AuthProvider } from './AuthContext';
 
-function App() {
-    const location = useLocation();
-    const hideHeader = location.pathname === '/login';
+const PrivateRoute = ({ children }) => {
+    const { user } = useContext(AuthContext);
+    return user ? children : <Navigate to="/login" />;
+};
 
-    console.log('App component rendered');
+const App = () => {
     return (
-        <div>
-            {!hideHeader && <Header />}
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/control" element={<Control />} />
-                <Route path="/login" element={<Login />} />
-            </Routes>
-        </div>
+        <AuthProvider>
+            <Router>
+                <Routes>
+                    <Route path="/" element={<Navigate to="/home" />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/home" element={<Home />} />
+                    <Route path="/control" element={<PrivateRoute><Control /></PrivateRoute>} />
+                </Routes>
+            </Router>
+        </AuthProvider>
     );
-}
+};
 
-function AppWrapper() {
-    return (
-        <Router>
-            <App />
-        </Router>
-    );
-}
-
-export default AppWrapper;
+export default App;

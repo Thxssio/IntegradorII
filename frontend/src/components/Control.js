@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getData, updateStatus } from '../api';
 import './styles.css';
+import Footer from './Footer';
 
 const Control = () => {
     const [bombaLigada, setBombaLigada] = useState(false);
     const [history, setHistory] = useState([]);
     const [lastEntryId, setLastEntryId] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -42,6 +45,10 @@ const Control = () => {
         }
     };
 
+    const goToHome = () => {
+        navigate('/home');
+    };
+
     return (
         <main>
             <h1>Controle do Sistema de Água</h1>
@@ -61,6 +68,7 @@ const Control = () => {
                     ))}
                 </ul>
             </section>
+            <button className="toggleButton" onClick={goToHome}>Voltar para Home</button>
         </main>
     );
 };

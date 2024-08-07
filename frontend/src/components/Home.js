@@ -2,13 +2,16 @@ import React, { useEffect, useState } from 'react';
 import './styles.css';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import { useNavigate } from 'react-router-dom';
 import { getData } from '../api';
+import Footer from './Footer';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const Home = () => {
     console.log('Home component rendered');
     const [data, setData] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -45,7 +48,9 @@ const Home = () => {
     };
 
     console.log('Chart data:', chartData); // Log para verificar os dados do gráfico
-
+    const goToControl = () => {
+        navigate('/control');
+    };
     const options = {
         scales: {
             y: {
@@ -57,6 +62,7 @@ const Home = () => {
     return (
         <main>
             <h1>Monitoramento do Sistema de Água</h1>
+            <button className="toggleButton" onClick={goToControl}>Ir para Controle</button> 
             <section className="info-section">
                 <h2>Informações sobre a caixa de água:</h2>
                 <div className="info-box">
