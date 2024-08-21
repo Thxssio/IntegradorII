@@ -13,12 +13,18 @@ const Home = () => {
     const [data, setData] = useState([]);
     const navigate = useNavigate();
 
+    const maxPoints = 50;  // Número máximo de pontos a exibir no gráfico
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const result = await getData();
-                console.log('Fetched data:', result); // Log para verificar os dados recebidos
-                setData(result);
+                console.log('Fetched data:', result);
+
+                // Transforma a resposta em um array se não for um array
+                const dataArray = Array.isArray(result) ? result : [result];
+
+                setData(prevData => [...prevData, ...dataArray].slice(-maxPoints)); // Mantém apenas os últimos maxPoints dados
             } catch (error) {
                 console.error('Error fetching data', error);
             }
@@ -47,7 +53,8 @@ const Home = () => {
         ],
     };
 
-    console.log('Chart data:', chartData); // Log para verificar os dados do gráfico
+    console.log('Chart data:', chartData);
+
     const goToControl = () => {
         navigate('/control');
     };
