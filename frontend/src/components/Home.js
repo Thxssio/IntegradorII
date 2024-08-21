@@ -13,7 +13,7 @@ const Home = () => {
     const [data, setData] = useState([]);
     const navigate = useNavigate();
 
-    const maxPoints = 50;  // Número máximo de pontos a exibir no gráfico
+    const maxPoints = 50; 
 
     useEffect(() => {
         const fetchData = async () => {
@@ -24,7 +24,16 @@ const Home = () => {
                 // Transforma a resposta em um array se não for um array
                 const dataArray = Array.isArray(result) ? result : [result];
 
-                setData(prevData => [...prevData, ...dataArray].slice(-maxPoints)); // Mantém apenas os últimos maxPoints dados
+                // Verifica se os dados são nulos e substitui por 0
+                const normalizedData = dataArray.map(entry => ({
+                    ...entry,
+                    level: entry.level ?? 0,
+                    power: entry.power ?? 0,
+                    voltage: entry.voltage ?? 0,
+                    current: entry.current ?? 0,
+                }));
+
+                setData(prevData => [...prevData, ...normalizedData].slice(-maxPoints)); // Mantém apenas os últimos maxPoints dados
             } catch (error) {
                 console.error('Error fetching data', error);
             }
@@ -75,7 +84,7 @@ const Home = () => {
                 <h2>Informações sobre a caixa de água:</h2>
                 <div className="info-box">
                     <img src="./images/water-tank-icon.png" alt="Ícone de Caixa de Água" />
-                    <div className="info-text">Nível da Água: {data.length > 0 ? data[data.length - 1].level : 'Carregando...'}</div>
+                    <div className="info-text">Nível da Água: {data.length > 0 ? data[data.length - 1].level : 0}</div>
                     <div className="progress-bar">
                         <div className="progress" style={{ width: `${data.length > 0 ? data[data.length - 1].level : 0}%` }}></div>
                     </div>
@@ -87,9 +96,9 @@ const Home = () => {
                     <img src="./images/pump.png" alt="Ícone de Bomba" />
                     {data.length > 0 ? (
                         <>
-                            <div className="info-text">Potência: {data[data.length - 1].power}W</div>
-                            <div className="info-text">Tensão: {data[data.length - 1].voltage || 'N/A'}V</div>
-                            <div className="info-text">Corrente: {data[data.length - 1].current || 'N/A'}A</div>
+                            <div className="info-text">Potência: {data[data.length - 1].power || 0}W</div>
+                            <div className="info-text">Tensão: {data[data.length - 1].voltage || 0}V</div>
+                            <div className="info-text">Corrente: {data[data.length - 1].current || 0}A</div>
                         </>
                     ) : (
                         <div className="info-text">Carregando...</div>
