@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -10,7 +11,7 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect('mongodb://134.65.246.27:27017/water-monitoring', {
+mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 }).then(() => {
@@ -19,6 +20,7 @@ mongoose.connect('mongodb://134.65.246.27:27017/water-monitoring', {
 }).catch((error) => {
     console.error('Connection error', error.message);
 });
+
 
 const waterSchema = new mongoose.Schema({
     level: Number,

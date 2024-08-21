@@ -21,7 +21,7 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5000/api/login', { username, password });
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/login`, { username, password });
             if (response.data.message === 'Login successful') {
                 login({ username });
                 navigate('/home');
@@ -29,10 +29,14 @@ const Login = () => {
                 setError(response.data.message);
             }
         } catch (error) {
-            setError('Failed to login');
+            if (error.response && error.response.data && error.response.data.message) {
+                setError(error.response.data.message);
+            } else {
+                setError('Failed to login: ' + error.message);
+            }
         }
     };
-
+    
     return (
         <div className="login-container">
             <img src="./images/water-tank-login.jpg" alt="Ícone de Bomba de Água" />
