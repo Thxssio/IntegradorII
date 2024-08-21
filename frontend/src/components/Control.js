@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getData, updateStatus } from '../api';
 import './styles.css';
-import Footer from './Footer';
 
 const Control = () => {
     const [bombaLigada, setBombaLigada] = useState(false);
