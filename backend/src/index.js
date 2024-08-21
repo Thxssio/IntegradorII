@@ -10,7 +10,7 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect('mongodb://134.65.246.27:27017/water-monitoring', {
+mongoose.connect('mongodb://localhost:27017/water-monitoring', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 }).then(() => {
