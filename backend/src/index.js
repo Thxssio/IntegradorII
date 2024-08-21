@@ -1,8 +1,9 @@
 require('dotenv').config();
-const express = require('express');
 const mongoose = require('mongoose');
+const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
+const { InfluxDB } = require('@influxdata/influxdb-client');
 const User = require('./models/userModel');
 
 const app = express();
@@ -10,6 +11,16 @@ const port = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
+
+// Configuração do InfluxDB
+const influxToken = process.env.INFLUXDB_TOKEN;
+const influxOrg = process.env.INFLUXDB_ORG;
+const influxBucket = process.env.INFLUXDB_BUCKET;
+const influxURL = process.env.INFLUXDB_URL;
+
+const influxDB = new InfluxDB({ url: influxURL, token: influxToken });
+const queryApi = influxDB.getQueryApi(influxOrg);
+
 
 mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
@@ -22,56 +33,40 @@ mongoose.connect(process.env.MONGODB_URI, {
 });
 
 
-const waterSchema = new mongoose.Schema({
-    level: Number,
-    power: Number,
-    voltage: Number,
-    current: Number,
-    status: { type: String, default: 'desligado' }
-});
+// Rota para obter dados do InfluxDB
+app.get('/api/influx-data', async (req, res) => {
+    const fluxQuery = `from(bucket: "${influxBucket}")
+                        |> range(start: -1h)
+                        |> filter(fn: (r) => r._measurement == "water_data")
+                        |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+                        |> sort(columns: ["_time"], desc: true)`;
 
-const Water = mongoose.model('Water', waterSchema);
-
-app.get('/api/data', async (req, res) => {
     try {
-        const data = await Water.find();
-        res.json(data);
+        let data = [];
+        await queryApi.queryRows(fluxQuery, {
+            next: (row, tableMeta) => {
+                const rowData = tableMeta.toObject(row);
+                data.push({
+                    time: rowData._time,
+                    level: rowData.level || null,
+                    power: rowData.power || null,
+                    voltage: rowData.voltage || null,
+                    current: rowData.current || null,
+                });
+            },
+            error: (error) => {
+                console.error('Error querying InfluxDB:', error);
+                res.status(500).json({ message: 'Error querying InfluxDB' });
+            },
+            complete: () => {
+                res.json(data);
+            },
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 });
 
-app.post('/api/data', async (req, res) => {
-    const data = new Water(req.body);
-    try {
-        const savedData = await data.save();
-        res.status(201).json(savedData);
-    } catch (error) {
-        res.status(400).json({ message: error.message });
-    }
-});
-
-app.put('/api/data/:id/status', async (req, res) => {
-    try {
-        const { status } = req.body;
-        const data = await Water.findByIdAndUpdate(req.params.id, { status }, { new: true });
-        res.json(data);
-    } catch (error) {
-        res.status(400).json({ message: error.message });
-    }
-});
-
-// Rota para receber dados do Arduino
-app.post('/api/water-data', async (req, res) => {
-    try {
-        const { level, power, voltage, current, status } = req.body;
-        const waterData = new Water({ level, power, voltage, current, status });
-        const savedData = await waterData.save();
-        res.status(201).json(savedData);
-    } catch (error) {
-        res.status(400).json({ message: error.message });
-    }
-});
 
 // Rota para registrar um novo usuário
 app.post('/api/register', async (req, res) => {

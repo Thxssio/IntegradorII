@@ -1,10 +1,8 @@
 import axios from 'axios';
-
-// Base URL from environment variable
 const API_URL = process.env.REACT_APP_API_URL;
-
+// Função para obter dados do InfluxDB
 export const getData = async () => {
-    const response = await axios.get(`${API_URL}/data`);
+    const response = await axios.get(`${API_URL}/influx-data`);
     return response.data;
 };
 

@@ -51,6 +51,7 @@ const Home = () => {
     const goToControl = () => {
         navigate('/control');
     };
+
     const options = {
         scales: {
             y: {
@@ -80,8 +81,8 @@ const Home = () => {
                     {data.length > 0 ? (
                         <>
                             <div className="info-text">Potência: {data[data.length - 1].power}W</div>
-                            <div className="info-text">Tensão: {data[data.length - 1].voltage || 'N/A'}V</div> {/* Adiciona valor padrão */}
-                            <div className="info-text">Corrente: {data[data.length - 1].current || 'N/A'}A</div> {/* Adiciona valor padrão */}
+                            <div className="info-text">Tensão: {data[data.length - 1].voltage || 'N/A'}V</div>
+                            <div className="info-text">Corrente: {data[data.length - 1].current || 'N/A'}A</div>
                         </>
                     ) : (
                         <div className="info-text">Carregando...</div>
